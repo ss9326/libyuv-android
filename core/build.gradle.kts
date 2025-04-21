@@ -1,15 +1,12 @@
-import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
-import com.vanniktech.maven.publish.JavadocJar
-import com.vanniktech.maven.publish.SonatypeHost
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.detekt)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.dokka.javadoc)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.maven.publish)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
+    id("org.jetbrains.dokka") version "2.0.0"
+    id("org.jetbrains.dokka-javadoc") version "2.0.0"
+    id("com.vanniktech.maven.publish") version "0.27.0"
     id("signing")
 }
 
@@ -26,7 +23,7 @@ version = Maven.VERSION
 
 android {
     namespace = "io.github.crow_misia.libyuv"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -91,9 +88,7 @@ android {
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_1_8
-    }
+    jvmToolchain(8)
 }
 
 dependencies {
@@ -113,43 +108,6 @@ dependencies {
 signing {
     useGpgCmd()
     sign(publishing.publications)
-}
-
-mavenPublishing {
-    configure(AndroidSingleVariantLibrary(
-        variant = "release",
-        publishJavadocJar = true,
-        sourcesJar = true,
-    ))
-
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-
-    coordinates(Maven.GROUP_ID, Maven.ARTIFACT_ID, Maven.VERSION)
-
-    pom {
-        name = Maven.ARTIFACT_ID
-        description = Maven.DESCRIPTION
-        url = "https://github.com/${Maven.GITHUB_REPOSITORY}/"
-        licenses {
-            license {
-                name = "Apache-2.0"
-                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                distribution = "repo"
-            }
-        }
-        developers {
-            developer {
-                id = "crow-misia"
-                name = "Zenichi Amano"
-                email = "crow.misia@gmail.com"
-            }
-        }
-        scm {
-            url = "https://github.com/${Maven.GITHUB_REPOSITORY}/"
-            connection = "scm:git:git://github.com/${Maven.GITHUB_REPOSITORY}.git"
-            developerConnection = "scm:git:ssh://git@github.com/${Maven.GITHUB_REPOSITORY}.git"
-        }
-    }
 }
 
 detekt {

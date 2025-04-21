@@ -18,10 +18,6 @@ dependencyResolutionManagement {
     }
 }
 
-refreshVersions {
-    sortSection = true
-}
-
 rootProject.name = "libyuv-android"
 include("core")
 include("sample")
